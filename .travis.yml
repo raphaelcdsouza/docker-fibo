@@ -1,0 +1,22 @@
+language: generic
+services:
+  - docker
+
+before_install:
+  - docker build -t rcsouz/docker-fibo -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true rcsouz/docker-fibo npm test
+
+after_success:
+  - docker build -t rcsouz/multi-client ./client
+  - docker build -t rcsouz/multi-nginx ./nginx
+  - docker build -t rcsouz/multi-server ./server
+  - docker build -t rcsouz/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push rcsouz/multi-client
+  - docker push rcsouz/multi-nginx
+  - docker push rcsouz/multi-server
+  - docker push rcsouz/multi-worker
