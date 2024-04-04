@@ -20,3 +20,15 @@ after_success:
   - docker push rcsouz/multi-nginx
   - docker push rcsouz/multi-server
   - docker push rcsouz/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ca-central-1"
+  app: "multi-docker"
+  env: "Multi-docker-env"
+  bucket_name: "elasticbeanstalk-ca-central-1-547174721712"
+  bucket_path: "multi-docker"
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: '$AWS_SECRET_KEY'
